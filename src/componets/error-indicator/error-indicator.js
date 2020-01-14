@@ -4,7 +4,7 @@ import './error-indicator.css';
 const ErrorIndicator = () => {
     return (
         <div>
-            Error!
+            <h1>Error!</h1>
         </div>
     );
 };

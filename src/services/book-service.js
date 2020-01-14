@@ -15,12 +15,13 @@ firebase.initializeApp(firebaseConfig);
 
 const db = firebase.firestore();
 
-const books = db.collection("books");
+const books = db.collection("books").get();
 
 export const getBooks = () => {
-    return books.get().then((snapshot) => {
+    return books.then((snapshot) => {
         return snapshot.docs.map(doc => {
-           return doc.data();
+            return doc.data();
         });
-    });
+    })
+        .catch(error => new Error(error));
 };

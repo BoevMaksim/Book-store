@@ -2,24 +2,31 @@ import React,{useEffect} from 'react';
 import BookListItem from "../book-list-item";
 import {connect} from "react-redux";
 import {getBooks} from "../../services/book-service";
-import {booksLoaded, booksRequested} from "../../actions";
+import {booksLoaded, booksRequested, booksError} from "../../actions";
 
 import './book-list.css'
 import Spinner from "../spinner";
+import ErrorIndicator from "../error-indicator";
 
-const BookList = ({books, booksLoaded, loading, booksRequested}) => {
+const BookList = ({ books, booksLoaded,
+                    loading, booksRequested,
+                    booksError, error }) => {
 
     useEffect(() => {
         booksRequested();
         getBooks()
             .then((doc) => booksLoaded(doc))
             .catch(err => {
-                console.error(err.message);
+                booksError(err.message);
               });
-    }, [booksLoaded, booksRequested]);
+    }, [booksLoaded, booksRequested, booksError]);
 
     if (loading) {
         return <Spinner/>
+    }
+
+    if (error) {
+        return <ErrorIndicator/>
     }
 
 return (
@@ -35,12 +42,14 @@ return (
     );
 };
 
-const mapStateToProps = ({books, loading}) => {
-    return {books, loading}
+const mapStateToProps = ({books, loading, error}) => {
+    return {books, loading, error}
 };
 
 const mapDispatchToProps = {
-    booksLoaded, booksRequested
+    booksLoaded,
+    booksRequested,
+    booksError
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(BookList);
